@@ -1,0 +1,53 @@
+/* Patch performance global (mobiles + tablettes + écrans sans souris) */
+@media (pointer: coarse),
+(max-width: 820px) {
+
+  /* Neutralise les flous et filtres coûteux */
+  .popup-blur,
+  .img-blur,
+  .popup-bg-blur,
+  .popup-blur-behind-image {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+    filter: none !important;
+    -webkit-filter: none !important;
+    opacity: .25 !important;
+    /* garde un petit voile léger */
+    transform: none !important;
+  }
+
+  /* Supprime toutes les ombres (moins joli, mais fluide) */
+  * {
+    box-shadow: none !important;
+  }
+
+  /* Cas particuliers : hero slider */
+  .hero-slider {
+    box-shadow: none !important;
+  }
+
+  /* Neutralise les blur résiduels sur mobile */
+  .work-card .progress,
+  .badge-new {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+    filter: none !important;
+    -webkit-filter: none !important;
+  }
+
+  /* Le hero a un léger filter (saturate/contrast) en desktop → inutile sur mobile */
+  .hero-slide img {
+    filter: none !important;
+    -webkit-filter: none !important;
+  }
+
+  /* Sécurité : la popup couvre et assombrit toujours */
+  .modal-lux {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 2147483647 !important;
+    background: rgba(0, 0, 0, .80) !important;
+    /* assombrissement franc même si le blur est coupé ailleurs */
+  }
+
+}

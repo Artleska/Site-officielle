@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<title>Novels – Archive</title>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<!-- Bootstrap -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"/>
+<!-- Accélère l'établissement TLS vers Firebase/CDN -->
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<!-- Styles -->
+<link href="css/style.css" rel="stylesheet"/>
+<link href="css/popup-styles.css" rel="stylesheet"/>
+<link href="css/settings.css" rel="stylesheet"/>
+<link rel="stylesheet" href="css/perf-patch.css">
+<!-- Tom Select -->
+<link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet"/>
+<style>
+    #extraFilters .row.g-3 { --bs-gutter-y: 1rem; }
+    .align-stretch > * { height: 100%; }
+    #advDrop { width: 100%; min-height: 48px; }
+  </style>
+</head>
+<body>
+<div class="background-overlay"></div>
+<nav class="navbar navbar-expand-lg">
+<div class="container-fluid">
+<a class="navbar-brand text-glow" href="index.html">Archive</a>
+<button aria-controls="navbarNav" aria-expanded="false" aria-label="Menu" class="navbar-toggler custom-toggler" data-bs-target="#navbarNav" data-bs-toggle="collapse" type="button">☰</button>
+<div class="collapse navbar-collapse" id="navbarNav">
+<ul class="navbar-nav ms-auto me-2">
+<li class="nav-item"><a class="nav-link" href="mangas.html">Mangas</a></li>
+<li class="nav-item"><a class="nav-link" href="animes.html">Animes</a></li>
+<li class="nav-item"><a class="nav-link" href="films.html">Films</a></li>
+<li class="nav-item"><a class="nav-link" href="series.html">Séries</a></li>
+<li class="nav-item"><a class="nav-link active" href="novels.html">Novels</a></li>
+<li class="nav-item"><a class="nav-link" href="formulaires.html">Formulaires</a></li>
+</ul>
+</div>
+<a aria-label="Compte / Paramètres" class="account-btn ms-2" href="settings.html" id="accountButton">
+<i class="bi bi-person-circle account-icon" id="accountIcon"></i>
+<img alt="Avatar utilisateur" class="account-avatar" decoding="async" id="accountAvatar" loading="lazy"/>
+</a>
+</div>
+</nav>
+<main class="container">
+<h1 class="text-center my-4 text-glow">Novels</h1>
+<!-- Recherche + Filtres/Tris -->
+<section class="card lux-form position-relative" style="max-width:1100px">
+<div class="row g-2 align-items-end">
+<!-- Titre / Autres titres -->
+<div class="col-12">
+<label class="form-label">Titre / Autres titres</label>
+<input class="form-control" id="qTitle" placeholder="Titre" type="search"/>
+</div>
+<!-- Description -->
+<div class="col-12">
+<label class="form-label">Description (mots-clés)</label>
+<input class="form-control" id="qDesc" placeholder="Description" type="search"/>
+</div>
+<!-- Panneau repliable -->
+<div class="col-12">
+<div id="extraFilters" style="display:none">
+<div class="row g-2 align-items-end">
+<div class="col-12 col-lg-6">
+<label class="form-label">Genres inclus (tous)</label>
+<select id="genresIn" multiple="" placeholder="Choisir les genres..."></select>
+</div>
+<div class="col-12 col-lg-6">
+<label class="form-label">Genres exclus</label>
+<select id="genresOut" multiple="" placeholder="Exclure des genres..."></select>
+</div>
+<div class="col-6 col-lg-3">
+<label class="form-label">Ch. min</label>
+<input class="form-control" id="minCh" placeholder="min" type="number"/>
+</div>
+<div class="col-6 col-lg-3">
+<label class="form-label">Ch. max</label>
+<input class="form-control" id="maxCh" placeholder="max" type="number"/>
+</div>
+<!-- Tris -->
+<div class="col-12">
+<div class="row g-2 align-items-stretch">
+<div class="col-12 col-lg-6">
+<label class="form-label">Trier par (critère principal)</label>
+<div class="d-flex gap-2 align-stretch">
+<select class="form-select" id="sortBy">
+<option value="title">Titre A→Z</option>
+<option value="modif">Dernière modification</option>
+<option value="progress">Progression (%)</option>
+<option value="chapters">Chapitres total</option>
+<option value="date">Date (champ date)</option>
+<option value="lastRead">Dernière lecture</option>
+<option value="similarity">Similarité (priorités 1.x)</option>
+</select>
+<button class="btn btn-outline-light" id="sortDir" title="Inverser l’ordre">↕︎</button>
+</div>
+</div>
+<div class="col-12 col-lg-6">
+<label class="form-label">Tri avancé (facultatif)</label>
+<div class="d-flex gap-2 align-stretch">
+<select class="form-select" id="advAddSelect">
+<option value="">— Ajouter un critère —</option>
+<option value="title">Titre A→Z</option>
+<option value="modif">Dernière modification</option>
+<option value="progress">Progression (%)</option>
+<option value="chapters">Chapitres total</option>
+<option value="date">Date (champ date)</option>
+<option value="lastRead">Dernière lecture</option>
+<option value="similarity">Similarité (priorités 1.x)</option>
+</select>
+<button class="btn btn-outline-light" id="advClear">Vider</button>
+</div>
+<input id="sortMulti" type="hidden" value=""/>
+</div>
+</div>
+</div>
+<div class="col-12">
+<div aria-label="Ordre des critères supplémentaires" class="adv-dropzone" id="advDrop"></div>
+</div>
+<div class="col-12 d-flex gap-2">
+<button class="lux-btn" id="applyBtn">Appliquer</button>
+<button class="lux-btn-outline" id="resetBtn">Réinitialiser</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="arrow-toggle" id="toggleArrow" title="Ouvrir / fermer les filtres">▼</div>
+</section>
+<div class="row g-4" id="novelCards"></div>
+</main>
+<button aria-label="Remonter" class="scroll-top-btn" id="scrollToTop">⬆</button>
+<!-- Libs -->
+<script defer="True" src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+<script defer="True" src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Boot -->
+<script type="module">
+    import { initNovelsPage } from './js/novels.js';
+    initNovelsPage();
+  </script>
+<script src="js/account.js" type="module"></script>
+</body>
+</html>
+

@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Accueil — Archive</title>
+
+  <!-- CSS de base -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+
+  <!-- Accélère l'établissement TLS vers Firebase/CDN -->
+  <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+
+  <!-- CSS projet -->
+  <link href="css/style.css" rel="stylesheet" />
+  <link href="css/popup-styles.css" rel="stylesheet" />
+  <link href="css/settings.css" rel="stylesheet" />
+  <link href="css/accueil.css" rel="stylesheet" />
+  <link href="css/perf-patch.css" rel="stylesheet">
+
+</head>
+
+<body>
+  <!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg">
+  <div class="container-fluid">
+    <a class="navbar-brand text-glow" href="index.html">Archive</a>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto me-2">
+        <li class="nav-item"><a class="nav-link" href="mangas.html">Mangas</a></li>
+        <li class="nav-item"><a class="nav-link" href="animes.html">Animes</a></li>
+        <li class="nav-item"><a class="nav-link" href="films.html">Films</a></li>
+        <li class="nav-item"><a class="nav-link" href="series.html">Séries</a></li>
+        <li class="nav-item"><a class="nav-link" href="novels.html">Novels</a></li>
+        <li class="nav-item"><a class="nav-link" href="formulaires.html">Formulaires</a></li>
+      </ul>
+    </div>
+   
+    <!-- Zone droite : compte + burger (flex, jamais en absolute) -->
+ 
+      <button aria-controls="navbarNav" aria-expanded="false" aria-label="Menu" class="navbar-toggler custom-toggler"
+        data-bs-target="#navbarNav" data-bs-toggle="collapse" type="button">☰</button>
+
+      <a aria-label="Compte / Paramètres" class="account-btn ms-2" href="settings.html" id="accountButton">
+        <i class="bi bi-person-circle account-icon" id="accountIcon"></i>
+        <img alt="Avatar utilisateur" class="account-avatar" decoding="async" id="accountAvatar" loading="lazy" />
+      </a>
+    </div>
+  </nav>
+
+  <!-- Contenu -->
+  <main class="container">
+    <!-- HERO + FILTRE -->
+    <section class="home-row home-hero-grid">
+      <div aria-label="Derniers ajouts" class="hero-slider" id="heroSlider"></div>
+      <!-- Sélecteur sous le hero -->
+      <aside aria-label="Filtrer par catégorie" class="hero-aside" id="homeFilter">
+        <button aria-pressed="true" class="chip" data-cat="mangas">Mangas</button>
+        <button class="chip" data-cat="animes">Animes</button>
+        <button class="chip" data-cat="films">Films</button>
+        <button class="chip" data-cat="series">Séries</button>
+        <button class="chip" data-cat="novels">Novels</button>
+      </aside>
+    </section>
+
+    <!-- DERNIÈRES MODIFS PAR CATÉGORIE -->
+    <section class="home-row">
+      <div class="row-header">
+        <div class="row-title">Dernières modifications</div>
+      </div>
+      <div class="h-scroll" id="row-mangas"></div>
+      <div class="h-scroll" id="row-animes"></div>
+      <div class="h-scroll" id="row-films"></div>
+      <div class="h-scroll" id="row-series"></div>
+      <div class="h-scroll" id="row-novels"></div>
+    </section>
+
+    <!-- À REPRENDRE -->
+    <section class="home-row">
+      <div class="row-header">
+        <div class="row-title">À reprendre</div>
+      </div>
+      <div class="h-scroll" id="row-continue"></div>
+    </section>
+
+    <!-- FAVORIS -->
+    <section class="home-row">
+      <div class="row-header">
+        <div class="row-title">⭐ Favoris</div>
+      </div>
+      <div class="h-scroll" id="row-fav"></div>
+    </section>
+
+    <!-- RECOMMANDÉS -->
+    <section class="home-row">
+      <div class="row-header">
+        <div class="row-title">Recommandés pour toi</div>
+      </div>
+      <div class="h-scroll" id="row-reco"></div>
+    </section>
+
+    <!-- STATS -->
+    <section class="home-row">
+      <div class="row-header">
+        <div class="row-title">Statistiques</div>
+      </div>
+      <div class="stats-grid" id="stats"></div>
+    </section>
+  </main>
+
+  <!-- ===== JS UTILITAIRE (inline pour garder le HTML autonome) ===== -->
+  <script>
+    // Utilitaire pour convertir '12px' -> 12
+    const px = v => parseFloat(String(v).replace('px', '')) || 0;
+
+    (function () {
+      const ROWS = ['#row-mangas', '#row-animes', '#row-films', '#row-series', '#row-novels',
+        '#row-continue', '#row-fav', '#row-reco'];
+
+      function layoutOne(root) {
+        if (!root) return;
+        const cards = Array.from(root.querySelectorAll('.work-card'))
+          .filter(c => getComputedStyle(c).display !== 'none');
+        if (!cards.length) { root.style.gridTemplateRows = 'var(--card-h)'; return; }
+
+        const csRoot = getComputedStyle(root);
+        const cardW = px(getComputedStyle(document.documentElement).getPropertyValue('--card-w'));
+        const gapX = px(csRoot.columnGap || csRoot.gap);
+        const avail = root.clientWidth;
+        const cols = Math.max(1, Math.floor((avail + gapX) / (cardW + gapX)));
+        const n = cards.length;
+
+        if (n <= cols) {
+          root.style.gridTemplateRows = 'var(--card-h)';
+          cards.forEach((card, i) => {
+            card.style.gridRow = '1';
+            card.style.gridColumn = String(i + 1);
+          });
+          return;
+        }
+
+        // 2 lignes alignées, sans trou à gauche
+        root.style.gridTemplateRows = 'var(--card-h) var(--card-h)';
+
+        // on remplit d'abord la ligne 1, puis la ligne 2 
+        for (let i = 0; i < n; i++) {
+          const seg = Math.floor(i / (2 * cols));
+          const inSeg = i % (2 * cols);
+          const isTop = inSeg < cols;
+          const colIndex = inSeg % cols;
+          const col = seg * cols + 1 + colIndex;
+          const card = cards[i];
+          card.style.gridRow = isTop ? '1' : '2';
+          card.style.gridColumn = String(col);
+        }
+      }
+
+      function layoutRows() { ROWS.forEach(sel => layoutOne(document.querySelector(sel))); }
+      window.__layoutRows = layoutRows;
+      window.addEventListener('resize', layoutRows);
+      document.addEventListener('DOMContentLoaded', layoutRows);
+      window.addEventListener('home-ready', layoutRows);
+      window.addEventListener('auth-ready', layoutRows);
+    })();
+
+    // Filtre page d'accueil (catégorie)
+    (function () {
+      const STORAGE_KEY = "homeFilterCat";
+      const DEFAULT_CAT = "mangas";
+
+      const chips = () => Array.from(document.querySelectorAll('#homeFilter .chip'));
+      const hero = () => document.getElementById('heroSlider');
+
+      function setActiveChip(cat) {
+        chips().forEach(btn => {
+          const active = btn.dataset.cat === cat;
+          btn.classList.toggle('active', active);
+          btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+        });
+      }
+
+      function ensureActiveVisible() {
+        const hs = hero(); if (!hs) return;
+        const slides = [...hs.querySelectorAll('.hero-slide')].filter(s => s.style.display !== 'none');
+        if (!slides.length) return;
+        if (!slides.some(s => s.classList.contains('active'))) {
+          slides.forEach(s => s.classList.remove('active'));
+          slides[0].classList.add('active');
+        }
+      }
+
+      // HERO
+      function filterHero(cat) {
+        const hs = hero(); if (!hs) return;
+        hs.querySelectorAll('.hero-slide').forEach(slide => {
+          const t = (slide.dataset.type || '').toLowerCase();
+          slide.style.display = (t === cat) ? '' : 'none';
+        });
+        ensureActiveVisible();
+      }
+
+      // RANGÉES + SECTIONS
+      function filterRows(cat) {
+        ['#row-continue', '#row-fav', '#row-reco'].forEach(sel => {
+          const row = document.querySelector(sel);
+          if (!row) return;
+          const cards = row.querySelectorAll('.work-card');
+          let anyVisible = false;
+          cards.forEach(card => {
+            const t = (card.dataset.type || '').toLowerCase();
+            const vis = (t === cat);        // montre seulement les cartes de la catégorie active
+            card.style.display = vis ? '' : 'none';
+            if (vis) anyVisible = true;
+          });
+          const container = (row.closest('.home-row') || row);
+          container.style.display = '';
+        });
+        const stats = document.querySelector('#stats');
+        if (stats) (stats.closest('.home-row') || stats).style.display = '';
+      }
+
+
+      function applyFilter(cat) {
+        setActiveChip(cat);
+        localStorage.setItem("homeFilterCat", cat);
+        document.body.dataset.cat = cat;
+        filterHero(cat);
+        if (window.__renderHeroFor) window.__renderHeroFor(cat, 6);
+        filterRows(cat);
+        requestAnimationFrame(() => window.__layoutRows && window.__layoutRows());
+      }
+
+      // --- helpers / démarrage / événements ---
+      const getCat = () => localStorage.getItem(STORAGE_KEY) || DEFAULT_CAT;
+
+      window.__applyFilterNow = () => applyFilter(getCat());
+
+      document.addEventListener("click", (e) => {
+        const chip = e.target.closest("#homeFilter .chip");
+        if (chip) {
+          applyFilter(chip.dataset.cat);
+          return;
+        }
+
+        const a = e.target.closest('a[href^="#row-"]');
+        if (a) {
+          e.preventDefault();
+          const hash = a.getAttribute("href");
+          const cat = hash.replace("#row-", "");
+
+          applyFilter(cat);
+
+          requestAnimationFrame(() => {
+            const row = document.querySelector(hash);
+            if (row) row.scrollIntoView({ behavior: "smooth", block: "start" });
+          });
+        }
+      });
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const cat = getCat();
+        setActiveChip(cat);
+        applyFilter(cat);
+      });
+
+      ["auth-ready", "home-ready"].forEach((evt) => {
+        window.addEventListener(evt, () => applyFilter(getCat()));
+      });
+    })();
+
+  </script>
+
+  <!-- ===== Modules applicatifs ===== -->
+  <script type="module">
+    import { onAuth } from "./js/auth.js";
+
+    function mapUserKey(email) {
+      const e = (email || '').toLowerCase().trim();
+      if (e === 'jadelavoie51@gmail.com') return 'J';
+      if (e === 'megane.lavoie24@gmail.com') return 'M';
+      if (e.includes('jade')) return 'J';
+      return 'M';
+    }
+
+    window.currentUserKey = "M";
+    window.currentUserUid = null;
+
+    onAuth((state) => {
+      if (state.isLogged) {
+        window.currentUserUid = state.uid;
+        window.currentUserKey = mapUserKey(state.email);
+      } else {
+        window.currentUserUid = null;
+        window.currentUserKey = "M";
+      }
+      window.dispatchEvent(new CustomEvent('auth-ready', {
+        detail: { uid: window.currentUserUid, key: window.currentUserKey, canWrite: !!state.canWrite }
+      }));
+    });
+
+  </script>
+  <script src="js/firebaseConfig.js" type="module"></script>
+  <script src="js/visualisation.js" type="module"></script>
+  <script src="js/home.js" type="module"></script>
+  <script src="js/account.js" type="module"></script>
+  <script defer="True" src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Service Worker -->
+  <script>
+    if ('serviceWorker' in navigator && !/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js', { scope: './' }).catch(console.warn);
+      });
+    }
+  </script>
+</body>
+
+</html>

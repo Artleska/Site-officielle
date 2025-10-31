@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<title>Formulaires – Archive</title>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" rel="stylesheet"/>
+<meta content="noindex, nofollow" name="robots">
+<!-- ✅ Bootstrap Icons (AJOUTÉ) -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"/>
+<!-- Accélère l'établissement TLS vers Firebase/CDN -->
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<!-- Fonts + Style -->
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="css/style.css" rel="stylesheet">
+<link href="css/settings.css" rel="stylesheet"/>
+<link rel="stylesheet" href="css/perf-patch.css">
+<!-- Tom Select -->
+<link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet"/>
+</link></meta></head>
+<body class="has-fixed-navbar">
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg">
+<div class="container-fluid">
+<a class="navbar-brand text-glow" href="index.html">Archive</a>
+<button aria-controls="navbarNav" aria-expanded="false" aria-label="Menu" class="navbar-toggler custom-toggler" data-bs-target="#navbarNav" data-bs-toggle="collapse" type="button">
+          ☰
+        </button>
+<div class="collapse navbar-collapse" id="navbarNav">
+<ul class="navbar-nav ms-auto me-2">
+<li class="nav-item"><a class="nav-link" href="mangas.html">Mangas</a></li>
+<li class="nav-item"><a class="nav-link" href="animes.html">Animes</a></li>
+<li class="nav-item"><a class="nav-link" href="films.html">Films</a></li>
+<li class="nav-item"><a class="nav-link" href="series.html">Séries</a></li>
+<li class="nav-item"><a class="nav-link" href="novels.html">Novels</a></li>
+<li class="nav-item"><a class="nav-link active" href="formulaires.html">Formulaires</a></li>
+</ul>
+</div>
+<!-- Bouton compte hors burger -->
+<a aria-label="Compte / Paramètres" class="account-btn ms-2" href="settings.html" id="accountButton">
+<i class="bi bi-person-circle account-icon" id="accountIcon"></i>
+<img alt="Avatar utilisateur" class="account-avatar" decoding="async" id="accountAvatar" loading="lazy"/>
+</a>
+</div>
+</nav>
+<div class="alert alert-warning" id="loginNotice" style="display:none; margin-bottom:12px;">
+      Connecte-toi pour ajouter/modifier : tous les champs sont en lecture seule pour l’instant.
+    </div>
+<!-- 🔐 Authentification -->
+<div class="container text-center mt-5" id="adminZone">
+<p class="text-muted">🔒 Connecte-toi pour ajouter ou modifier tes œuvres</p>
+<button class="lux-btn w-auto" id="loginBtn">Connexion Google</button>
+</div>
+<!-- 📁 Formulaires dynamiques par onglet -->
+<section class="formulaires-wrapper" id="formulairesZone" style="display: none;">
+<div class="form-tabs" id="onglets-formulaires"></div>
+<!-- Outil batch AniList -->
+<div class="formulaires-conteneurs">
+<div class="formulaires-panel" id="mangaForm"></div>
+<div class="formulaires-panel" id="animeForm"></div>
+<div class="formulaires-panel" id="filmForm"></div>
+<div class="formulaires-panel" id="serieForm"></div>
+<div class="formulaires-panel" id="novelForm"></div>
+
+</section>
+<!-- 🔝 Bouton remonter -->
+<button class="lux-btn position-fixed bottom-0 end-0 m-3 d-none" id="scrollToTop" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">⬆️</button>
+<!-- 🔌 JS Modules -->
+<script type="module">
+      import { checkAuthAccess, connectWithGoogle } from './js/auth.js';
+
+      // Références DOM
+      const adminZone       = document.getElementById('adminZone');
+      const formulairesZone = document.getElementById('formulairesZone');
+      const loginNotice     = document.getElementById('loginNotice');
+      const loginBtn        = document.getElementById('loginBtn');
+
+      // Bouton connexion
+      loginBtn?.addEventListener('click', () => connectWithGoogle());
+
+      // Affiche / masque selon l'email autorisé
+      const ALLOWED = ['megane.lavoie24@gmail.com', 'jadelavoie51@gmail.com'];
+
+      checkAuthAccess(
+        (user) => {
+          const email = (user.email || '').toLowerCase();
+          const allowed = ALLOWED.includes(email);
+
+          if (allowed) {
+            adminZone.style.display = 'none';
+            formulairesZone.style.display = 'block';
+            loginNotice.style.display = 'none';
+          } else {
+            adminZone.innerHTML = `<p class="text-danger">⛔ Accès non autorisé pour ${email}</p>`;
+            adminZone.style.display = 'block';
+            formulairesZone.style.display = 'none';
+            loginNotice.style.display = 'block';
+          }
+        },
+        () => {
+          adminZone.style.display = 'block';
+          formulairesZone.style.display = 'none';
+          loginNotice.style.display = 'block';
+        }
+      );
+    </script>
+<script defer="True" src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+<script src="js/formulaires.js" type="module"></script>
+<script src="js/account.js" type="module"></script>
+<!-- JavaScript utilisé par Bootstrap - Conserver -->
+<script crossorigin="anonymous" defer="True" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

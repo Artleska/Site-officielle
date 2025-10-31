@@ -1,0 +1,1039 @@
+/* ========== PALETTE COSMIQUE FUTURISTE ========== */
+:root {
+  --bg-overlay: rgba(10, 10, 20, 0.7);
+  --text-light: #cfd9ff;
+  --text-muted: #8aa0c7;
+  --primary: #00aaff;
+  --primary-glow: #00c3ff;
+  --border-glow: #66d9ff;
+  --card-bg: rgba(25, 30, 45, 0.3);
+  --radius: 14px;
+  --font-main: 'Inter', 'Segoe UI', sans-serif;
+  --transition: 0.3s ease;
+
+  /* fonction de trie */
+  --lux-text: #f5fbff;
+  --lux-muted: rgba(245, 251, 255, .75);
+  --chip-bg: rgba(255, 255, 255, .12);
+  --chip-bg-hover: rgba(255, 255, 255, .18);
+  --chip-border: rgba(255, 255, 255, .28);
+  --zone-bg: rgba(255, 255, 255, .08);
+  --zone-border: rgba(255, 255, 255, .25);
+
+  /* Fond optimisé + comportement sûr mobile/desktop */
+  --bg-768: url('../images/fond-768.webp');
+  --bg-1280: url('../images/fond-1280.webp');
+  --bg-1536: url('../images/fond-1536.webp');
+
+  /* Variables */
+  --container-max: 1200px;
+  --gutter: clamp(12px, 4vw, 24px);
+  --nav-h: 64px;
+  --nav-bg: #0a121c;
+  --nav-fg: #fff;
+}
+
+/* ================= GLOBAL ================= */
+html {
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  scrollbar-width: none;
+}
+
+/* ================= BACKGROUND ================= */
+body {
+  background-color: #000;
+  color: var(--text-light);
+  font-family: var(--font-main);
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+  -ms-overflow-style: none;
+
+
+  /* Mobile par défaut */
+  background-image: var(--bg-768);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center top;
+  background-attachment: scroll;
+}
+
+/* Surcouches */
+@media (min-width:768px) {
+  body {
+    background-image: var(--bg-1280);
+  }
+}
+
+@media (min-width:1200px) and (hover:hover) and (any-pointer:fine) {
+  body {
+    background-image: var(--bg-1536);
+    background-attachment: fixed;
+  }
+}
+
+/* Corriger les marges trop larges sur desktop */
+.container {
+  padding-inline: var(--gutter);
+  max-width: var(--container-max);
+  margin-inline: auto;
+  box-sizing: border-box;
+}
+
+/* Réduction des marges inutiles entre les éléments */
+main h1 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 2rem;
+}
+
+.filters {
+  margin-bottom: 1rem;
+}
+
+/* ===================== NAVBAR ========================== */
+
+.navbar>.container,
+.navbar>.container-fluid {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.navbar {
+  background: linear-gradient(180deg, rgba(10, 18, 28, .55), rgba(10, 18, 28, .35));
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  box-shadow: none;
+  border-bottom: 1px solid rgba(255, 255, 255, .06);
+  padding-block: .5rem;
+  padding-inline: 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 1200;
+}
+
+.navbar .navbar-brand {
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: var(--primary);
+  letter-spacing: .5px;
+  text-shadow: none;
+}
+
+.navbar-toggler {
+  border: none;
+  background: transparent;
+  color: var(--text-light);
+  font-size: 2rem;
+  text-shadow: none;
+  position: static !important;
+  display: grid;
+  place-items: center;
+  height: 40px;
+  padding: 0;
+  line-height: 1;
+}
+
+.navbar-toggler .bi-list {
+  display: block;
+  font-size: 28px;
+  line-height: 1;
+}
+
+.navbar .navbar-collapse {
+  justify-content: center;
+  background: transparent !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  min-width: 0;
+}
+
+.navbar .account-btn {
+  display: grid;
+  place-items: center;
+  height: 40px;
+  line-height: 1;
+  border: none;
+}
+
+#accountAvatar,
+.account-avatar {
+  display: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.account-icon {
+  display: block;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 18px;
+  line-height: 1;
+  color: #fff;
+}
+
+.navbar .navbar-nav {
+  display: inline-flex;
+  margin: 0 auto;
+  border-radius: 16px;
+  background: rgba(10, 26, 48, 0.623);
+  border: 3px solid rgba(45, 57, 71, 0.482);
+  -webkit-backdrop-filter: blur(6px) saturate(1.08);
+  backdrop-filter: blur(6px) saturate(1.08);
+  background-clip: padding-box;
+}
+
+.navbar .nav-link {
+  position: relative;
+  color: var(--text-light);
+  margin: 0 .7rem;
+  font-weight: 500;
+  padding: .2rem .1rem .2rem;
+  background: transparent !important;
+  text-shadow: none;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link.active {
+  color: var(--primary-glow);
+}
+
+.navbar .nav-link::after {
+  content: "";
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  bottom: 6px;
+  height: 1px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--primary), var(--primary-glow));
+  box-shadow: 0 0 6px rgba(0, 180, 255, .35);
+  transform: scaleX(.6);
+  opacity: 0;
+  transition: transform .18s ease, opacity .18s ease;
+}
+
+.navbar .nav-link:hover::after,
+.navbar .nav-link.active::after {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+.navbar .nav-link:focus-visible,
+.navbar-toggler:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+@media (min-width: 992px) {
+  .navbar .navbar-collapse {
+    flex: 1 1 auto;
+  }
+}
+
+@media (max-width: 991.98px) {
+
+  .navbar .container,
+  .navbar .container-fluid {
+    position: relative;
+  }
+
+  .navbar .navbar-nav {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: space-evenly;
+    gap: 0;
+    padding: 4px;
+  }
+
+  .navbar .navbar-brand {
+    margin-right: auto;
+  }
+
+  .navbar .navbar-collapse:not(.show) {
+    display: none !important;
+  }
+
+  .navbar .navbar-nav>* {
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+
+  .navbar .navbar-collapse {
+    order: 4;
+    width: 100%;
+  }
+
+  .navbar .nav-link {
+    margin: 0.25rem;
+    padding: .45rem .1rem .35rem;
+    line-height: 1.15;
+    text-align: center;
+    white-space: nowrap;
+    font-size: clamp(.78rem, 2.6vw, .95rem);
+    letter-spacing: 0;
+  }
+
+  .navbar .nav-link::after {
+    bottom: 2px;
+    height: 0.5px;
+    left: 10%;
+    right: 10%;
+  }
+}
+
+/* =================== ONGLETS FORMULAIRES ================== */
+#onglets-formulaires {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  margin: 1rem 0;
+}
+
+.tab-button {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-muted);
+  border: 1px solid transparent;
+  border-radius: 15px;
+  padding: 0.4rem 1.2rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+}
+
+.tab-button:hover {
+  background: var(--primary);
+  color: #000;
+  border-color: var(--primary-glow);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .35);
+}
+
+.tab-button.active {
+  background: linear-gradient(135deg, var(--primary), var(--primary-glow));
+  color: #000;
+  font-weight: bold;
+  border-color: var(--border-glow);
+  box-shadow: 0 0 8px var(--primary-glow), 0 0 6px rgba(0, 170, 255, 0.2);
+  transform: scale(1.06);
+  z-index: 1;
+}
+
+
+/* === FORMULAIRE === */
+.lux-form {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .35);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  max-width: 850px;
+  margin: 2rem auto;
+  padding: 1rem;
+  position: relative;
+}
+
+.lux-form::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius);
+  padding: 2px;
+  background: linear-gradient(135deg, #00aaff33, #00336633);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask-composite: destination-out;
+  pointer-events: none;
+}
+
+/* Champs */
+input,
+textarea,
+select {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  transition: background .15s ease, border-color .15s ease, box-shadow .15s ease;
+  color: var(--lux-text);
+  caret-color: var(--primary);
+}
+
+input,
+textarea,
+select,
+.ts-wrapper.multi .ts-control {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .35);
+}
+
+input::placeholder,
+textarea::placeholder,
+select::placeholder {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  background-color: rgba(255, 255, 255, 0.16);
+  border-color: var(--primary-glow);
+  box-shadow: 0 0 0 .18rem rgba(0, 195, 255, .28);
+  color: #ffffff;
+  caret-color: var(--primary);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Lisibilité des menus <select> natifs */
+select option,
+select optgroup {
+  color: #111 !important;
+  /* texte foncé lisible sur fond blanc */
+  background: #1b173568 !important;
+  /* certains navigateurs l’honorent */
+}
+
+/* Si supporté : forcer les contrôles natifs en mode sombre */
+@supports (color-scheme: dark) {
+  select {
+    color-scheme: dark;
+  }
+
+  /* dropdown OS sombre */
+  select option {
+    color: #eaf2ff;
+    background: #101319;
+  }
+}
+
+.form-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .8rem;
+}
+
+.form-group {
+  flex: 1 1 45%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.form-group.full {
+  flex: 1 1 100%;
+}
+
+label {
+  display: none;
+}
+
+.link-pair-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.link-pair-row input {
+  flex: 1;
+}
+
+/* === TomSelect Tags et Dropdown harmonisés === */
+.ts-wrapper.multi .ts-control {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 8px !important;
+  padding: 0.8rem 1rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .35);
+  font-size: 0.95rem;
+  color: var(--text-light) !important;
+}
+
+/* Effet focus */
+.ts-wrapper.multi.focus .ts-control {
+  background-color: rgba(255, 255, 255, 0.06) !important;
+  border-color: var(--primary) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .35);
+}
+
+/* Input interne (écriture du genre) */
+.ts-control input {
+  color: var(--text-light) !important;
+  font-style: italic;
+  background: transparent !important;
+}
+
+.ts-wrapper.multi .item {
+  background: rgba(0, 0, 0, 0.5) !important;
+  color: var(--text-light) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .35);
+}
+
+/* ==========Dropdown : style de la "boîte"========== */
+.ts-dropdown {
+  background: rgba(0, 0, 0, 0.9) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .35);
+  z-index: 20000 !important;
+  max-height: 60vh;
+  overflow-y: auto;
+
+}
+
+.ts-dropdown .ts-dropdown-content {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: center !important;
+  align-content: flex-start;
+  gap: 0.2rem;
+  max-height: 80vh !important;
+  overflow-y: auto !important;
+  padding: 0.001rem !important;
+}
+
+/* Option */
+.ts-dropdown .option {
+  box-sizing: border-box;
+  flex: 0 0 calc(25% - 0.2rem);
+  min-height: 40px;
+  text-align: center;
+  padding: 1px 0.4px;
+  border-radius: 8px;
+  background: rgba(20, 20, 30, .6);
+  border: 1px solid rgba(255, 255, 255, .06);
+  font-size: .9rem;
+  font-weight: 500;
+  color: var(--text-light);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  line-height: 1.4;
+}
+
+/* Label interne centré proprement */
+.ts-dropdown .option .ts-opt-label {
+  display: flex;
+  justify-content: center;
+  min-height: 30px;
+  line-height: 1.25;
+  white-space: normal;
+  word-break: break-word;
+  padding: 0 6px;
+}
+
+.ts-dropdown .option .highlight {
+  white-space: nowrap;
+}
+
+/* Effet lumineux au survol */
+.ts-dropdown .option:hover,
+.ts-dropdown .option.active,
+.ts-dropdown .option.selected,
+.ts-dropdown .option[aria-selected="true"] {
+  background: linear-gradient(135deg, rgba(0, 170, 255, 0.25), rgba(0, 50, 100, 0.4));
+  color: var(--primary-glow);
+  border-color: var(--primary);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .35);
+  transform: translateY(-2px) scale(1.05);
+}
+
+/* Ajustement responsive */
+@media (max-width: 600px) {
+  .ts-dropdown .option {
+    flex-basis: 48%;
+    max-width: 48%;
+  }
+}
+
+/* Bouton X pour retirer — discret */
+.ts-wrapper.multi .item .remove {
+  color: var(--text-muted) !important;
+  font-weight: normal;
+  margin-left: 0.4rem;
+  font-size: 0.9em;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.ts-wrapper.multi .item .remove:hover {
+  opacity: 1;
+}
+
+/* === BOUTONS === */
+.lux-btn,
+.lux-btn-outline {
+  display: block;
+
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 1rem;
+  padding: 0.7rem 1.2rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.lux-btn {
+  background: var(--primary);
+  color: #000;
+  box-shadow: 0 0 8px var(--primary-glow);
+  border: none;
+  width: 100%;
+}
+
+.lux-btn:hover {
+  background: var(--primary-glow);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .35);
+}
+
+.lux-btn-outline {
+  background: transparent;
+  border: 1px solid var(--primary-glow);
+  color: var(--primary-glow);
+  width: 100%;
+}
+
+/*------- Fléche pour remonter en haut ------*/
+.scroll-top-btn {
+  position: fixed;
+  bottom: 15px;
+  right: 15px;
+  display: none;
+  border: 1px solid var(--primary, #6cf);
+  background: rgba(0, 0, 0, 0.55);
+  color: var(--primary, #6cf);
+  padding: 9px 9px;
+  border-radius: 999px;
+  cursor: pointer;
+  z-index: 1000;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .35);
+}
+
+.scroll-top-btn.show {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.scroll-top-btn:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+
+
+/* Flèche */
+.arrow-toggle {
+  text-align: center;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 6px 4px;
+  user-select: none;
+  color: var(--lux-text);
+}
+
+.arrow-toggle:hover {
+  color: #0dcaf0;
+}
+
+/* Champs de formulaire */
+.form-select,
+.form-control {
+  color: var(--text-light);
+  background-color: rgba(255, 255, 255, .10);
+  border-color: rgba(255, 255, 255, .32);
+  transition: background .15s, border-color .15s, box-shadow .15s;
+}
+
+.form-select::placeholder,
+.form-control::placeholder {
+  color: rgba(207, 217, 255, .58);
+}
+
+.form-select:focus,
+.form-control:focus {
+  background-color: rgba(255, 255, 255, .18);
+  border-color: var(--primary-glow);
+  box-shadow: 0 0 0 .18rem rgba(0, 195, 255, .18);
+  color: #fff;
+  outline: none;
+  caret-color: var(--primary);
+}
+
+/* Boutons outline */
+.btn.btn-outline-light {
+  color: var(--lux-text);
+  border-color: rgba(255, 255, 255, .65);
+}
+
+.btn.btn-outline-light:hover {
+  background: rgba(255, 255, 255, .12);
+  border-color: #fff;
+}
+
+/* Grille tri + commandes */
+@media (min-width: 992px) {
+  .sort-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    align-items: start;
+  }
+}
+
+/* Tri avancé puces */
+.adv-row {
+  display: flex;
+  gap: .5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.adv-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: .55rem;
+  padding: .46rem .76rem;
+  border-radius: 999px;
+  border: 1px solid var(--chip-border);
+  background: var(--chip-bg);
+  color: var(--lux-text);
+  cursor: grab;
+  user-select: none;
+}
+
+.adv-chip:hover {
+  background: var(--chip-bg-hover);
+}
+
+.adv-chip:active {
+  cursor: grabbing;
+  transform: scale(.98);
+}
+
+.adv-chip .handle {
+  font-size: 1rem;
+  line-height: 1;
+  opacity: .95
+}
+
+.adv-chip .label {
+  font-size: .98rem
+}
+
+.adv-chip .remove {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  opacity: .85;
+  width: 1.6rem;
+  height: 1.6rem;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+}
+
+.adv-chip .remove:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, .16);
+}
+
+.adv-chip:focus-visible,
+.btn:focus-visible,
+.form-control:focus-visible,
+.form-select:focus-visible,
+.arrow-toggle:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 .2rem rgba(0, 195, 255, .40);
+  border-color: var(--primary-glow);
+}
+
+.adv-chip,
+.adv-row,
+.adv-dropzone {
+  touch-action: manipulation;
+}
+
+@media (max-width: 420px) {
+  .adv-row {
+    gap: .4rem;
+  }
+
+  .adv-chip .label {
+    font-size: .95rem;
+  }
+}
+
+/* Zone d'accueil des puces — pleine largeur */
+.adv-dropzone {
+  width: 100%;
+  min-height: 48px;
+  display: flex;
+  gap: .5rem;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: .7rem .8rem;
+  border-radius: .9rem;
+  border: 1px solid var(--zone-border);
+  background: var(--zone-bg);
+  color: var(--lux-text);
+  touch-action: manipulation;
+}
+
+.adv-dropzone:empty::before {
+  content: "Ces critères s'appliquent avant le critère principal.";
+  color: var(--lux-muted);
+  font-size: 1rem;
+}
+
+.adv-hint {
+  font-size: .95rem;
+  color: var(--lux-muted)
+}
+
+/* Tom Select – placeholders lisibles */
+.ts-wrapper.multi .ts-control,
+.ts-wrapper .ts-control {
+  background: rgba(255, 255, 255, .10);
+  border-color: rgba(255, 255, 255, .32);
+}
+
+.ts-wrapper .ts-control input {
+  color: var(--lux-text);
+}
+
+.ts-wrapper .ts-control::placeholder {
+  color: var(--lux-muted);
+}
+
+/* ====== Rythme vertical + lisibilité dans le panneau ====== */
+#extraFilters .row.g-3>[class^="col-"],
+#extraFilters .row.g-3>[class*=" col-"] {
+  margin-bottom: 0.9rem;
+  /* Ã©cart constant partout */
+}
+
+/* labels compacts, champs sans marge additionnelle */
+#extraFilters .form-label {
+  margin-bottom: .35rem;
+}
+
+#extraFilters .form-control,
+#extraFilters .form-select {
+  margin-bottom: 0;
+}
+
+/* La ligne des tris (2 colonnes) a un petit espace aprés */
+.sort-row {
+  margin-bottom: .6rem;
+}
+
+/* Dropzone pleine largeur avec marge régulière */
+#advDrop {
+  width: 100%;
+  min-height: 48px;
+}
+
+#advHint {
+  margin-top: .35rem;
+}
+
+/* ====== Alignements : boutons = même hauteur que le select ====== */
+.sort-row .d-flex.align-items-stretch>* {
+  height: 100%;
+}
+
+#sortDir {
+  padding-left: .55rem;
+  padding-right: .55rem;
+}
+
+/* "Ajouter un critère" + "Vider" alignés et même hauteur */
+.adv-row.align-items-stretch>* {
+  height: 100%;
+}
+
+/* Optionnel : gap constant entre les champs min/max */
+#minCh,
+#maxCh {
+  min-height: 44px;
+}
+
+/* Alignement image + titre côte à côte */
+.ts-opt.media {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px;
+}
+
+/* Miniature */
+.ts-thumb {
+  width: 36px;
+  height: 48px;
+  flex: 0 0 36px;
+  object-fit: cover;
+  border-radius: 4px;
+  background: #222;
+}
+
+/* Zone texte */
+.ts-lines {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Titre réduit */
+.ts-title {
+  font-size: 0.85rem;
+  /* plus petit */
+  font-weight: 500;
+  /* semi-gras */
+  line-height: 1.2;
+}
+
+/* Supprimer la sous-ligne (ID) */
+.ts-sub {
+  display: none !important;
+}
+
+/* chLus */
+/* conteneur du champ */
+.chlus-field {
+  display: flex;
+  gap: 6px;
+  border: 1px solid rgba(255, 255, 255, .18);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, .04);
+  padding: 6px;
+}
+
+/* sous-inputs */
+.chlus-part {
+  flex: 1;
+  text-align: center;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 6px 4px;
+  outline: none;
+}
+
+.chlus-part::placeholder {
+  opacity: .7;
+  font-style: italic;
+}
+
+/* focus visuel */
+.chlus-part:focus {
+  background: rgba(255, 255, 255, .08);
+  border-radius: 4px;
+}
+
+/* formulaire episode et saison */
+/* Duo VF/VOSTFR */
+.duo-field {
+  display: flex;
+  gap: 6px;
+  border: 1px solid rgba(255, 255, 255, .18);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, .04);
+  padding: 6px;
+}
+
+.duo-part {
+  flex: 1;
+  text-align: center;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font-weight: 600;
+  font-size: .95rem;
+  padding: 6px 4px;
+  outline: none;
+}
+
+.duo-part::placeholder {
+  opacity: .7;
+  font-style: italic;
+}
+
+.duo-part:focus {
+  background: rgba(255, 255, 255, .08);
+  border-radius: 4px;
+}
+
+/* === Fix overlay + placements sur mobile/tablette === */
+
+
+@media (max-width: 991.98px) {
+
+  .lux-form {
+    margin-top: .75rem;
+  }
+}
+
+.modal-lux,
+.modal-content-lux,
+.popup-blur,
+.popup-bg-blur,
+.popup-blur-behind-image,
+.account-btn {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  filter: none !important;
+}
+
+.section-lourde,
+.liste-cartes,
+.row-grille {
+  content-visibility: auto;
+  contain-intrinsic-size: 1000px;
+}
+
+input,
+select,
+textarea,
+button {
+  font-size: 16px;
+  line-height: 1.2;
+}
+
+a,
+button,
+.btn,
+.lux-btn,
+.lux-btn-outline {
+  touch-action: manipulation;
+}
+
+a:active,
+button:active,
+.btn:active,
+.lux-btn:active,
+.lux-btn-outline:active {
+  transform: none !important;
+}
